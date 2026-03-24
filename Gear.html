@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gear I Actually Use | Rebuild at 50</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ed;
+    --cream: #ede9e1;
+    --orange: #c8400a;
+    --orange-light: #e8520f;
+    --gray: #6b6560;
+    --border: #2a2826;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--orange); }
+
+  nav a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 2rem;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    padding: 6rem 2rem 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--orange);
+  }
+
+  .hero-body {
+    max-width: 560px;
+    font-size: 1.05rem;
+    color: #b8b3ab;
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
+
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--orange);
+    color: var(--white);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .cta-primary:hover {
+    background: var(--orange-light);
+    transform: translateY(-1px);
+  }
+
+  .cta-primary svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+  }
+
+  .cta-primary:hover svg { transform: translateX(3px); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+  .section:nth-child(5) { animation-delay: 0.4s; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .chapter-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: rgba(200, 64, 10, 0.12);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid rgba(200, 64, 10, 0.25);
+    white-space: nowrap;
+  }
+
+  .section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  /* GEAR GRID */
+  .gear-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .gear-item {
+    background: var(--black);
+    padding: 1.75rem;
+    transition: background 0.2s;
+  }
+
+  .gear-item:hover { background: #111; }
+
+  .gear-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(200, 64, 10, 0.1);
+    border: 1px solid rgba(200, 64, 10, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+  }
+
+  .gear-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .gear-desc {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* STOREFRONT CALLOUT */
+  .storefront-callout {
+    background: #111;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+  }
+
+  .storefront-callout-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+
+  .storefront-callout-text p {
+    font-size: 0.9rem;
+    color: var(--gray);
+  }
+
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .cta-secondary:hover {
+    background: var(--orange);
+    color: var(--white);
+  }
+
+  /* DISCLOSURE */
+  .disclosure {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .disclosure p {
+    font-size: 0.78rem;
+    color: #4a4642;
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+
+  .disclosure a { color: #6b6560; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 1rem 1.25rem; }
+    nav { display: none; }
+    .hero { padding: 4rem 1.25rem 3rem; }
+    .section { padding: 3rem 1.25rem; }
+    .storefront-callout { padding: 1.5rem; flex-direction: column; align-items: flex-start; }
+    .disclosure { padding: 2rem 1.25rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="https://rebuildat50.github.io" class="logo">Rebuild <span>at 50</span></a>
+  <nav>
+    <a href="https://rebuildat50.github.io">Home</a>
+    <a href="https://rebuildat50.substack.com">Substack</a>
+    <a href="https://www.amazon.com/shop/rebuildat50">Shop</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <span class="hero-label">Book Resources</span>
+  <h1>The Gear I <em>Actually</em> Use</h1>
+  <p class="hero-body">
+    No fluff. No sponsorships. Every product on this page is something I use personally — the same gear referenced throughout <em>Rebuild at 50: Use It or Lose It</em>. I've put together a full list on my Amazon storefront so you can find everything in one place.
+  </p>
+  <a href="https://www.amazon.com/shop/rebuildat50" class="cta-primary" target="_blank" rel="noopener">
+    Browse the Full Storefront
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 8h10M9 4l4 4-4 4"/>
+    </svg>
+  </a>
+</div>
+
+<hr class="divider">
+
+<!-- EQUIPMENT -->
+<section class="section">
+  <div class="section-header">
+    <span class="chapter-tag">Chapter 5</span>
+    <h2>Home Gym Equipment</h2>
+  </div>
+  <div class="gear-grid">
+    <div class="gear-item">
+      <div class="gear-icon">🏋️</div>
+      <div class="gear-name">Adjustable Dumbbells</div>
+      <div class="gear-desc">The only piece of equipment you truly need. I recommend sets with a quick-adjust dial mechanism — Bowflex 552 or Core Home Fitness are both solid. Start at 5 lbs, grow to 50.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🪑</div>
+      <div class="gear-name">Adjustable Bench</div>
+      <div class="gear-desc">Flat to 45-degree incline. 17 inches high when flat. Solid locking mechanism. Narrow enough for free arm movement. You can find a good one for $100–200 — mine came secondhand.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🧘</div>
+      <div class="gear-name">Rubber Floor Mat</div>
+      <div class="gear-desc">Protects your floor and stops equipment sliding. Not glamorous but essential if you're training on hardwood or tile. One 4x6 foot mat handles most setups.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPLEMENTS -->
+<section class="section">
+  <div class="section-header">
+    <span class="chapter-tag">Chapter 10</span>
+    <h2>Supplements I Actually Take</h2>
+  </div>
+  <div class="gear-grid">
+    <div class="gear-item">
+      <div class="gear-icon">🥛</div>
+      <div class="gear-name">Whey Protein</div>
+      <div class="gear-desc">1 scoop post-workout. ~25g protein. Go for low-sugar. Fast-digesting — gets to muscle tissue when it counts most. Non-negotiable after 50 when protein synthesis slows down.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">⚡</div>
+      <div class="gear-name">Creatine Monohydrate</div>
+      <div class="gear-desc">5g daily. Mix into water or your shake. No loading phase needed. One of the most well-researched supplements in existence — safe, effective, and cheap. Don't overthink it.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">☕</div>
+      <div class="gear-name">Collagen Peptides</div>
+      <div class="gear-desc">1 scoop in morning coffee. Unflavored mixes invisibly. Supports joints, tendons, and connective tissue — the stuff that takes the longest to recover after 40.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🌙</div>
+      <div class="gear-name">Magnesium Glycinate</div>
+      <div class="gear-desc">200–400mg before bed. Improves sleep quality and reduces post-workout cramping. Glycinate form is easiest on the stomach. Start low and adjust.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">💊</div>
+      <div class="gear-name">Zinc</div>
+      <div class="gear-desc">15–30mg daily with food. Supports immune function and helps maintain testosterone levels. Don't overdo it — more isn't better with zinc.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🧴</div>
+      <div class="gear-name">Electrolytes</div>
+      <div class="gear-desc">LMNT or Nuun on training days. Especially important if you're in a warm climate or sweating heavily. Prevents fatigue and cramping without the sugar hit of sports drinks.</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOVERY -->
+<section class="section">
+  <div class="section-header">
+    <span class="chapter-tag">Chapter 11</span>
+    <h2>Sleep & Recovery</h2>
+  </div>
+  <div class="gear-grid">
+    <div class="gear-item">
+      <div class="gear-icon">😴</div>
+      <div class="gear-name">Sleep Mask / Blackout Curtains</div>
+      <div class="gear-desc">Light disrupts melatonin even through closed eyelids. A quality sleep mask costs almost nothing and makes a measurable difference in sleep depth. One of the highest-ROI purchases on this list.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🧊</div>
+      <div class="gear-name">Cold Plunge / Cold Therapy</div>
+      <div class="gear-desc">Reduces acute inflammation, speeds perceived recovery, and has a surprisingly strong effect on mood and mental clarity. Cold showers are free. Purpose-built cold plunges are the upgrade.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🌡️</div>
+      <div class="gear-name">Sauna Blanket</div>
+      <div class="gear-desc">Heat promotes circulation, relaxes connective tissue, and has solid longevity research behind it. A sauna blanket is a fraction of the cost of a full sauna with most of the benefit.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🫧</div>
+      <div class="gear-name">Foam Roller / Massage Gun</div>
+      <div class="gear-desc">Active recovery between sessions. Breaks up adhesions, improves blood flow, and reduces soreness. Five minutes after training or before bed makes the next session noticeably easier.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKING -->
+<section class="section">
+  <div class="section-header">
+    <span class="chapter-tag">Chapter 13</span>
+    <h2>Movement & Tracking</h2>
+  </div>
+  <div class="gear-grid">
+    <div class="gear-item">
+      <div class="gear-icon">⌚</div>
+      <div class="gear-name">Fitness Tracker / Smartwatch</div>
+      <div class="gear-desc">10,000 steps doesn't count itself. A wrist tracker keeps you honest about daily movement volume — the most underrated health variable after 50. Sleep tracking as a bonus.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🧘</div>
+      <div class="gear-name">Yoga Mat</div>
+      <div class="gear-desc">For floor work, stretching, yoga, and Pilates sessions. Non-slip surface matters more than thickness. A 5mm mat handles everything in this book.</div>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🎯</div>
+      <div class="gear-name">Resistance Bands</div>
+      <div class="gear-desc">Useful for warm-ups, mobility work, and as a regression tool when you're building into heavier movements. Light, cheap, and travel-friendly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STOREFRONT CALLOUT -->
+<div style="max-width:900px;margin:0 auto;padding:0 2rem;">
+  <div class="storefront-callout">
+    <div class="storefront-callout-text">
+      <h3>Everything in One Place</h3>
+      <p>Browse my full Amazon storefront for current product picks across every category.</p>
+    </div>
+    <a href="https://www.amazon.com/shop/rebuildat50" class="cta-secondary" target="_blank" rel="noopener">
+      amazon.com/shop/rebuildat50
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<!-- DISCLOSURE -->
+<div class="disclosure">
+  <p>
+    <strong style="color:#6b6560;">Affiliate Disclosure:</strong> Some links on this page are affiliate links. If you purchase through them, I may earn a small commission at no extra cost to you. I only recommend products I personally use and believe in. This helps support the Rebuild at 50 content — thank you.
+  </p>
+</div>
+
+</body>
+</html>
