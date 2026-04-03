@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebuild at 50</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f4f8fc;
+      --surface: #ffffff;
+      --white: #0f1e2e;
+      --off: #4a6278;
+      --gold: #1a6fa3;
+      --gold-dim: rgba(26,111,163,0.1);
+      --border: rgba(26,111,163,0.25);
+      --border-subtle: rgba(0,0,0,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(circle, rgba(26,111,163,0.18) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .wrap {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* CURSOR */
+    .cursor {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, opacity 0.3s;
+    }
+    .cursor.expand { width: 36px; height: 36px; opacity: 0.2; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(244,248,252,0.95) 0%, transparent 100%);
+    }
+
+    .nav-logo {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      opacity: 0.75;
+    }
+
+    .nav-cta {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 9px 18px;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--gold-dim); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 140px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -10%; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(26,111,163,0.08) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-tag {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: rise 1s cubic-bezier(0.16,1,0.3,1) forwards 0.1s;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 8.5vw, 6rem);
+      font-weight: 300;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: rise 1s cubic-bezier(0.16,1,0.3,1) forwards 0.25s;
+    }
+    h1 em { font-style: italic; color: var(--gold); }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--off);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: rise 1s cubic-bezier(0.16,1,0.3,1) forwards 0.4s;
+    }
+
+    .hero-down {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--off);
+      text-decoration: none;
+      opacity: 0;
+      animation: rise 1s cubic-bezier(0.16,1,0.3,1) forwards 0.55s;
+      transition: color 0.2s;
+    }
+    .hero-down:hover { color: var(--gold); }
+
+    .pulse-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: blink 2.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:0.35} 50%{opacity:1} }
+
+    /* SECTIONS */
+    .section {
+      padding: 96px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 44px;
+    }
+    .eyebrow::after {
+      content: '';
+      flex: none;
+      width: 48px; height: 1px;
+      background: var(--border);
+    }
+
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 300;
+      line-height: 1.12;
+      margin-bottom: 20px;
+    }
+    .sec-title em { font-style: italic; color: var(--gold); }
+
+    .sec-body {
+      font-size: 0.97rem;
+      color: var(--off);
+      line-height: 1.85;
+      max-width: 500px;
+    }
+
+    /* NEWSLETTER */
+    .nl-form {
+      margin-top: 40px;
+      display: flex;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .nl-form:focus-within { border-color: var(--gold); }
+
+    .nl-form input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 16px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--white);
+      outline: none;
+    }
+    .nl-form input::placeholder { color: var(--off); opacity: 0.55; }
+
+    .nl-form button {
+      background: #1a6fa3;
+      border: none;
+      padding: 16px 26px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #ffffff;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .nl-form button:hover { background: #15608e; }
+
+    .nl-note {
+      margin-top: 12px;
+      font-size: 0.74rem;
+      color: var(--off);
+      opacity: 0.45;
+    }
+
+    /* ABOUT QUOTE */
+    .a-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.65;
+      color: rgba(15,30,46,0.78);
+      border-left: 2px solid #1a6fa3;
+      padding-left: 28px;
+      margin: 36px 0;
+    }
+
+    /* CTA BLOCK */
+    .cta-card {
+      margin-top: 40px;
+      padding: 40px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .cta-card:hover { border-color: rgba(201,169,110,0.38); }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 220px; height: 220px;
+      background: radial-gradient(ellipse at top right, rgba(201,169,110,0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.3rem);
+      font-weight: 300;
+      line-height: 1.18;
+      margin-bottom: 14px;
+    }
+    .cta-title em { font-style: italic; color: var(--gold); }
+
+    .cta-body {
+      font-size: 0.9rem;
+      color: var(--off);
+      line-height: 1.8;
+      max-width: 420px;
+      margin-bottom: 28px;
+    }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--gold);
+      border-radius: 2px;
+      padding: 13px 24px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-gold:hover { background: var(--gold); color: #ffffff; }
+    .btn-gold .arr { transition: transform 0.2s; }
+    .btn-gold:hover .arr { transform: translateX(4px); }
+
+    /* PRODUCTS */
+    .prod-list {
+      margin-top: 12px;
+    }
+
+    .prod-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0 24px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      text-decoration: none;
+      color: var(--white);
+      gap: 20px;
+      position: relative;
+      transition: padding-left 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .prod-row::before {
+      content: '';
+      position: absolute;
+      left: -32px;
+      width: 2px; height: 0;
+      background: var(--gold);
+      top: 50%; transform: translateY(-50%);
+      transition: height 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .prod-row:hover { padding-left: 12px; }
+    .prod-row:hover::before { height: 36px; }
+
+    .prod-info { flex: 1; }
+
+    .prod-platform {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 5px;
+    }
+
+    .prod-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+
+    .prod-desc {
+      font-size: 0.8rem;
+      color: var(--off);
+      line-height: 1.5;
+    }
+
+    .prod-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--off);
+      white-space: nowrap;
+    }
+    .prod-meta .go {
+      font-size: 18px;
+      color: var(--gold);
+      transition: transform 0.2s;
+    }
+    .prod-row:hover .go { transform: translateX(4px); }
+
+    /* SOCIAL */
+    .soc-group { margin-bottom: 36px; }
+
+    .soc-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--off);
+      opacity: 0.55;
+      margin-bottom: 14px;
+    }
+
+    .soc-links { display: flex; flex-direction: column; gap: 2px; }
+
+    .soc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 17px 20px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      text-decoration: none;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.22s cubic-bezier(0.16,1,0.3,1);
+    }
+    .soc-row::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 0;
+      background: var(--gold-dim);
+      transition: width 0.22s;
+    }
+    .soc-row:hover { transform: translateX(5px); border-color: var(--border); }
+    .soc-row:hover::before { width: 3px; }
+
+    .soc-left { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
+    .soc-text { display: flex; flex-direction: column; gap: 2px; }
+    .soc-platform { font-size: 0.93rem; font-weight: 400; }
+    .soc-handle { font-size: 0.74rem; color: var(--off); }
+
+    .soc-icon {
+      width: 22px; height: 22px;
+      flex-shrink: 0;
+      color: var(--gold);
+      opacity: 0.65;
+      position: relative; z-index: 1;
+      transition: opacity 0.2s;
+    }
+    .soc-row:hover .soc-icon { opacity: 1; }
+
+    .soc-arr {
+      font-size: 16px;
+      color: var(--gold);
+      opacity: 0.5;
+      position: relative; z-index: 1;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .soc-row:hover .soc-arr { opacity: 1; transform: translateX(3px); }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .f-brand {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--off);
+      opacity: 0.45;
+    }
+    .f-loc { font-size: 11px; color: var(--off); opacity: 0.35; }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.on { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.18s; }
+    .d3 { transition-delay: 0.28s; }
+    .d4 { transition-delay: 0.38s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 540px) {
+      .wrap { padding: 0 20px; }
+      nav { padding: 18px 20px; }
+      .nl-form { flex-direction: column; }
+      .nl-form button { padding: 14px; text-align: center; }
+      .cta-card { padding: 26px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <nav>
+    <a href="#" class="nav-logo">Rebuild at 50</a>
+    <a href="https://calendly.com/keith-wilkins-guon/30min" class="nav-cta" target="_blank" rel="noopener">Book a Call</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="wrap hero-inner">
+      <p class="hero-tag">Rebuild at 50</p>
+      <h1>I left a 23-year<br>government career<br>at 50 and moved<br>to <em>Thailand.</em></h1>
+      <p class="hero-sub">Here's everything I learned. The wins, the mistakes, and the parts that don't make the Reels.</p>
+      <a href="#newsletter" class="hero-down">
+        <span class="pulse-line"></span>
+        Read the newsletter
+      </a>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section" id="newsletter">
+    <div class="wrap">
+      <div class="eyebrow reveal">Newsletter</div>
+      <h2 class="sec-title reveal d1">Rebuild at 50<br><em>Field Notes</em></h2>
+      <p class="sec-body reveal d2">Real-time dispatches from the other side of rebuilding your life. If you're in your 40s or 50s and something feels off — the career, the direction, the life you thought you wanted — you're in the right place.</p>
+      <div class="reveal d3">
+        <form class="nl-form" onsubmit="handleSub(event)">
+          <input type="email" placeholder="Your email address" required />
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="nl-note">No spam. One issue a week. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="eyebrow reveal">About</div>
+      <h2 class="sec-title reveal d1">Not a guru.<br><em>Just further down the road.</em></h2>
+      <blockquote class="a-quote reveal d2">
+        "I got sober at 45, started lifting at 47, took up Muay Thai at 50, and walked away from a career most people would call secure. I document what actually happens when you stop waiting."
+      </blockquote>
+      <p class="sec-body reveal d3">The physical transformation, the financial leap, the permanent relocation — none of it looked the way I thought it would. This is what it actually looks like.</p>
+    </div>
+  </section>
+
+  <!-- STRATEGY SESSION -->
+  <section class="section" id="session">
+    <div class="wrap">
+      <div class="eyebrow reveal">Work With Me</div>
+      <div class="cta-card reveal d1">
+        <p class="cta-label">Strategy Session · 60 min · Zoom</p>
+        <h3 class="cta-title">Sometimes you need<br>one <em>honest conversation.</em></h3>
+        <p class="cta-body">We talk about where you are, where you want to go, and what's actually in the way. Not coaching. Not a sales call. A straight conversation from someone who already made the jump.</p>
+        <a href="https://calendly.com/keith-wilkins-guon/30min" class="btn-gold" target="_blank" rel="noopener">
+          Book a Strategy Session <span class="arr">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="section" id="resources">
+    <div class="wrap">
+      <div class="eyebrow reveal">Resources</div>
+      <h2 class="sec-title reveal d1">Everything<br><em>I've built.</em></h2>
+      <div class="prod-list reveal d2">
+
+        <a href="https://rebuildat50.gumroad.com/l/nobossrequired" class="prod-row" target="_blank" rel="noopener">
+          <div class="prod-info">
+            <p class="prod-platform">Guide · Gumroad</p>
+            <p class="prod-name">No Boss Required</p>
+            <p class="prod-desc">For professionals over 45 ready to monetize what they already know.</p>
+          </div>
+          <div class="prod-meta"><span class="go">→</span></div>
+        </a>
+
+        <a href="https://rebuildat50.gumroad.com/l/relocatetothailand" class="prod-row" target="_blank" rel="noopener">
+          <div class="prod-info">
+            <p class="prod-platform">Guide · Gumroad</p>
+            <p class="prod-name">Thailand Relocation Guide</p>
+            <p class="prod-desc">The practical reality of moving to Thailand. What I wish I'd known first.</p>
+          </div>
+          <div class="prod-meta"><span class="go">→</span></div>
+        </a>
+
+        <a href="https://www.amazon.com/dp/B0FB425VXJ" class="prod-row" target="_blank" rel="noopener">
+          <div class="prod-info">
+            <p class="prod-platform">Book · Amazon KDP</p>
+            <p class="prod-name">Rebuild at 50: Use It or Lose It</p>
+            <p class="prod-desc">Starting from zero at 47. What actually works with no athletic background.</p>
+          </div>
+          <div class="prod-meta"><span class="go">→</span></div>
+        </a>
+
+        <a href="https://amazon.com/shop/rebuildat50" class="prod-row" target="_blank" rel="noopener">
+          <div class="prod-info">
+            <p class="prod-platform">Storefront · Amazon</p>
+            <p class="prod-name">Amazon Storefront</p>
+            <p class="prod-desc">Everything I actually use — training gear, books, equipment.</p>
+          </div>
+          <div class="prod-meta"><span class="go">→</span></div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL -->
+  <section class="section" id="links">
+    <div class="wrap">
+      <div class="eyebrow reveal">Find Me Here</div>
+
+      <div class="soc-group reveal d1">
+        <p class="soc-label">Short-form video</p>
+        <div class="soc-links">
+          <a href="https://instagram.com/rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">Instagram</span>
+                <span class="soc-handle">@rebuildat50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+          <a href="https://tiktok.com/@rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">TikTok</span>
+                <span class="soc-handle">@rebuildat50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+          <a href="https://youtube.com/@rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14C4.47 20.5 12 20.5 12 20.5s7.53 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">YouTube</span>
+                <span class="soc-handle">@rebuildat50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="soc-group reveal d2">
+        <p class="soc-label">Writing & community</p>
+        <div class="soc-links">
+          <a href="https://x.com/rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">X (Twitter)</span>
+                <span class="soc-handle">@rebuildat50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+          <a href="https://linkedin.com/in/rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">LinkedIn</span>
+                <span class="soc-handle">Rebuild at 50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+          <a href="https://facebook.com/rebuildat50" class="soc-row" target="_blank" rel="noopener">
+            <div class="soc-left">
+              <svg class="soc-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <div class="soc-text">
+                <span class="soc-platform">Facebook</span>
+                <span class="soc-handle">Rebuild at 50</span>
+              </div>
+            </div>
+            <span class="soc-arr">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="f-brand">Rebuild at 50</p>
+      <p class="f-loc">© 2026 · Phuket, Thailand</p>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cur = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cur.classList.add('expand'));
+      el.addEventListener('mouseleave', () => cur.classList.remove('expand'));
+    });
+
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // Newsletter — wire to Beehiiv
+    function handleSub(e) {
+      e.preventDefault();
+      const email = e.target.querySelector('input').value;
+      window.open('https://rebuildat50.beehiiv.com/subscribe?email=' + encodeURIComponent(email), '_blank');
+    }
+  </script>
+
+</body>
+</html>
